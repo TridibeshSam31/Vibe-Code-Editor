@@ -19,24 +19,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if(!existingUser){
             //user aaya hi pehli baar hai 
             const newUser = await db.user.create({
+                //@ts-ignore
                 data:{
-                    email:user.email ,
+                    email: user.email ?? "", // fallback to empty string if null/undefined
                     name:user.name,
                     image:user.image,
 
                     accounts: {
                         //@ts-ignore
                         create: {
+                            //@ts-ignore
                              type: account.type,
                              provider: account.provider,
                              providerAccountId: account.providerAccountId,
-                             refreshToken: account.refresh_token,
-                             accessToken: account.access_token,
-                              expiresAt: account.expires_at,
-                             tokenType: account.token_type,
+                             refresh_token: account.refresh_token,
+                             access_token: account.access_token,
+                             expires_at: account.expires_at,
                              scope: account.scope,
-                             idToken: account.id_token,
-                             sessionState: account.session_state,
+                             id_token: account.id_token,
                             }
                     }
 
@@ -65,14 +65,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 data: {
                 userId: existingUser.id,
                 type: account.type,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                refreshToken: account.refresh_token,
-                accessToken: account.access_token,
-                expiresAt: account.expires_at,
-                tokenType: account.token_type,
-                scope: account.scope,
-                idToken: account.id_token,
+                             provider: account.provider,
+                             providerAccountId: account.providerAccountId,
+                             refresh_token: account.refresh_token,
+                             access_token: account.access_token,
+                             expires_at: account.expires_at,
+                             scope: account.scope,
+                             id_token: account.id_token,
                 //@ts-ignore
                 sessionState: account.session_state,
             
