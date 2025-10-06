@@ -31,6 +31,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  myPlaground Playground[]
 
   
 
@@ -50,6 +51,7 @@ model Account {
   idToken           String? @map("id_token")
   sessionState      String? @map("session_state")
 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -58,3 +60,27 @@ model Account {
 
 //doing npx prisma db push is not necessary , but yes it's a good practice
 //this account and user fields are given in nextauth recent version  i.e auth.js for reference so taken from these 
+
+
+enum Templates {
+REACT
+NEXTJS
+EXPRESS
+VUE
+HONO
+ANGULAR
+}
+
+model Playground {
+  id String @id @default(cuid()) @map("_id")
+  title String 
+  description String?
+  template Templates @default(REACT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userId String
+  user User  @relation(fields:[userId], references: [id] , onDelete: Cascade)
+
+
+}
