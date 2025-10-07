@@ -26,19 +26,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     image:user.image,
 
                     accounts: {
-                        //@ts-ignore
-                        create: {
-                            //@ts-ignore
-                             type: account.type,
-                             provider: account.provider,
-                             providerAccountId: account.providerAccountId,
-                             refresh_token: account.refresh_token,
-                             access_token: account.access_token,
-                             expires_at: account.expires_at,
-                             scope: account.scope,
-                             id_token: account.id_token,
-                            }
-                    }
+              // @ts-ignore
+              create: {
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                refreshToken: account.refresh_token,
+                accessToken: account.access_token,
+                expiresAt: account.expires_at,
+                tokenType: account.token_type,
+                scope: account.scope,
+                idToken: account.id_token,
+                sessionState: account.session_state,
+              },
+            },
 
 
                 }
