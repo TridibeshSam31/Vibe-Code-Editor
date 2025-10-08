@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import {Header} from "@/modules/home/header"
-import Footer from "@/modules/home/footer"
+import {Footer} from "@/modules/home/footer"
 import { cn } from "@/lib/utils"
 
 

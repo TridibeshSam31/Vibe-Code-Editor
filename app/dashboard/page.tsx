@@ -4,6 +4,7 @@ import AddRepo from '@/modules/dashboard/components/add-new-repo'
 import {getAllPlaygroundForUser} from '@/modules/dashboard/actions'
 import ProjectTable from '@/modules/dashboard/components/project-table'
 import EmptyState from '@/modules/dashboard/components/empty-state'
+import {deletePlayground ,editProjectById,duplicateProjectById} from '@/modules/dashboard/actions'
 
 
 
@@ -23,7 +24,7 @@ const page = async() => {
         ) : (
           <ProjectTable
             projects={playgrounds || []}
-            onDeleteProject={deleteProjectById}
+            onDeleteProject={deletePlayground}
             onUpdateProject={editProjectById}
             onDuplicateProject={duplicateProjectById}
           />
