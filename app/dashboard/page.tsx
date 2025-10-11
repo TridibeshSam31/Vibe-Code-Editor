@@ -10,7 +10,7 @@ import {deletePlayground ,editProjectById,duplicateProjectById} from '@/modules/
 
 
 
-const page = async() => {
+const Page = async() => {
     const playgrounds = await getAllPlaygroundForUser()
   return (
     <div className='flex flex-col justify-center items-center min-h-screen mx-auto max-w-7xl px-4 py-10'>
@@ -35,4 +35,4 @@ const page = async() => {
   )
 }
 
-export default page
+export default Page

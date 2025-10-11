@@ -65,16 +65,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 await db.account.create({
                 data: {
                 userId: existingUser.id,
-                type: account.type,
-                             provider: account.provider,
-                             providerAccountId: account.providerAccountId,
-                             refresh_token: account.refresh_token,
-                             access_token: account.access_token,
-                             expires_at: account.expires_at,
-                             scope: account.scope,
-                             id_token: account.id_token,
-                //@ts-ignore
-                sessionState: account.session_state,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              refreshToken: account.refresh_token,
+              accessToken: account.access_token,
+              expiresAt: account.expires_at,
+              tokenType: account.token_type,
+              scope: account.scope,
+              idToken: account.id_token,
+              // @ts-ignore
+              sessionState: account.session_state,
             
                 },
                 })
@@ -84,16 +85,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     },
     async jwt({token}){
-        if(!token.sub) return token; //sub is id 
+        if(!token.sub) return token;
+      const existingUser = await getUserById(token.sub)
 
-        const existingUser = await getUserById(token.sub);
-        if(!existingUser) return token;
+      if(!existingUser) return token;
 
-        token.name = existingUser.name;
-        token.email = existingUser.email;
-        token.image = existingUser.image;
+      const exisitingAccount = await getAccountByUserId(existingUser.id);
 
-        return token
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+
+      return token;
         
     },
     async session({ session, token}){
@@ -112,6 +115,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   secret:process.env.AUTH_SECRET,
-  adapter:PrismaAdapter(db),
+  adapter: PrismaAdapter(db),
+  session: { strategy: "jwt" },
   ...authConfig
 })
