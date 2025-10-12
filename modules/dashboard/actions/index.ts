@@ -15,6 +15,14 @@ export const getAllPlaygroundForUser = async()=>{
             },
             include:{
                 user:true,
+                Starmark:{
+            where:{
+                userId:user?.id!
+            },
+            select:{
+                isMarked:true
+            }
+           }
             }
 
         })
@@ -112,6 +120,58 @@ export const duplicateProjectById = async(id:string)=>{
         console.log(error)
     }
 }
+
+export const toggleStarMarked = async(playgroundId:string,isChecked:boolean)=>{
+    const user = await currentUser()
+    const userId = user?.id
+    if(!userId){
+        throw new Error("User Id is Required")
+
+    }
+    try {
+        if (isChecked) {
+           await db.starMark.create({
+            data:{
+                userId:userId!,
+                playgroundId,
+                isMarked:isChecked
+            }
+           }) 
+        }else{
+            await db.starMark.delete({
+                where:{
+                    userId_playgroundId:{
+                        userId,
+                        playgroundId:playgroundId
+                    }
+                }
+            })
+        }
+
+        revalidatePath("/dashboard");
+        return {success:true,isMarked:isChecked}
+    } catch (error) {
+        console.error("Error updating Problem:",error)
+        return {success:false,error:"failed to update problem"}
+    }
+} 
+
+/* what we did in this toggleStar method is that 
+1st was about user authentication 
+and then we were dealing with database operations
+When starring (isChecked = true)
+this creates a new record in the StarMark table 
+Link the user to the playground they're starring
+When unstarring (isChecked = false):
+Deletes the existing star record
+Uses a composite key (userId_playgroundId) to find the exact record
+
+and then Cache Revalidation:
+Refreshes the dashboard page data (likely using Next.js)
+Ensures the UI shows the updated star status immediately
+
+
+*/
 
     
     
