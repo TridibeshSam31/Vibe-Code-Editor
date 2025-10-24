@@ -33,6 +33,7 @@ model User {
   updatedAt DateTime @updatedAt
   myPlaground Playground[]
   staredPlayground StarMark[]
+  /*{codeTime TimeTracking[]}*/
 
   
 
@@ -82,6 +83,7 @@ model Playground {
   starMarks StarMark[]
 
   userId String
+  /*{time TimeTracking[]}*/
   user User  @relation(fields:[userId], references: [id] , onDelete: Cascade)
 
 
@@ -100,5 +102,23 @@ model StarMark{
   @@unique([userId, playgroundId]) //ek user sirf ek bar hi mark kr skta hai 
 
 }
+
+
+/*
+model TimeTracking {
+  id            String   @id @default(cuid()) @map("_id")
+  playgroundId  String
+  userId        String
+  startTime     DateTime
+  endTime       DateTime?
+  duration      Int      // in seconds
+  date          DateTime @default(now())
+  
+  playground    Playground @relation(fields: [playgroundId], 
+                           references: [id], onDelete: Cascade)
+  user          User @relation(fields: [userId], 
+                           references: [id], onDelete: Cascade)
+}
+*/
 
 
