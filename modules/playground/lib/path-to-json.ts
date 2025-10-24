@@ -431,7 +431,7 @@ example
 
 
 
- 
+
 
  This script is useful for template-based tools, like:
 
@@ -439,6 +439,23 @@ example
  Template marketplaces (showing structure without exposing full source)
  Code preview tools (VSCode-style tree preview)
  Static analysis or documentation for file structures
+
+
+
+
+ Simplified Flow of ehat is happening
+ User calls → scanTemplateDirectory('some/path')
+    ↓
+ Check path, merge ignore rules
+    ↓
+ processDirectory('folderName', 'folderPath')
+    ↓
+ Recursively scan → files + subfolders
+    ↓
+ Return JSON → { folderName, items: [...] }
+    ↓
+ (saveTemplateStructureToJson writes it to file if needed)
+
 
 
 
