@@ -180,22 +180,7 @@ export const duplicateProjectById = async(id:string)=>{
 
 
 
-/* what we did in this toggleStar method is that 
-1st was about user authentication 
-and then we were dealing with database operations
-When starring (isChecked = true)
-this creates a new record in the StarMark table 
-Link the user to the playground they're starring
-When unstarring (isChecked = false):
-Deletes the existing star record
-Uses a composite key (userId_playgroundId) to find the exact record
 
-and then Cache Revalidation:
-Refreshes the dashboard page data (likely using Next.js)
-Ensures the UI shows the updated star status immediately
-
-
-*/
 
     
     
