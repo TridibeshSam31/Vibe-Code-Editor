@@ -85,6 +85,8 @@ model Playground {
   userId String
   /*{time TimeTracking[]}*/
   user User  @relation(fields:[userId], references: [id] , onDelete: Cascade)
+  templateFiles TemplateFile[]
+
 
 
 }
@@ -121,4 +123,12 @@ model TimeTracking {
 }
 */
 
+model TemplateFile {
+  id String @id @default(cuid()) @map("_id")
+  content Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  playgroundId String @unique
+  playground Playground @relation(fields:[playgroundId], references: [id] , onDelete:Cascade)
 
+}
