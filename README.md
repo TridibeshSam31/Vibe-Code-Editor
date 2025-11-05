@@ -1,4 +1,4 @@
-# 🧠 Vibecode Editor – AI-Powered Web IDE
+# 🧠 Vibecode Editor – where code meets AI, voice, and speed.
 
 ![Vibecode Editor Thumbnail](public/vibe-code-editor-thumbnaail.svg)
 
