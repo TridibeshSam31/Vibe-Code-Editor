@@ -1,7 +1,9 @@
 import {useState,useEffect,useCallback} from "react"
-import { toast } from "sonner"
+
 
 import type { TemplateFolder } from "../lib/path-to-json"
+import { getPlaygroundById } from "../actions"
+import { toast } from "sonner"
 
 interface PlaygroundData {
     id:string,
@@ -27,18 +29,53 @@ const [templateData,setTemplateData] = useState<TemplateFolder | null>(null);
 const [isLoading,setIsLoading] = useState<boolean>(false);
 const [error,setError] = useState<string | null>(null);
 
-const loadPlayground = async ()=>{
-    setIsLoading(true);
+const loadPlayground = useCallback(async ()=>{
+    if(!id) return
+
     try {
-        const response = await fetch(`/api/playground/${id}`);
-        const data = await response.json();
-        setPlaygroundData(data);
-    } catch (error) {
-        setError("Failed to load playground");
-    } finally {
-        setIsLoading(false);
+     setIsLoading(true)
+     setError(null)
+     
+     const data = await getPlaygroundById(id)
+     // @ts-ignore
+     setPlaygroundData(data);
+     const rawContent = data?.templateFiles?.[0]?.content
+
+     if (typeof rawContent === "string") {
+        const parsedContent = JSON.parse(rawContent)
+        setTemplateData(parsedContent)
+        toast.success("playground loaded successfully")
+        return
+     }
+
+     //load template from api if not in saved content
+
+     const res = await fetch(`/api/template/${id}`)
+
+     if(!res.ok) throw new Error(`Failed to load template: ${res.status}`)
+        const  templateRes = await res.json()
+    if(templateRes.templateJson && Array.isArray(templateRes.templateJson)){
+        setTemplateData({
+            folderName:"Root",
+            items:templateRes.templateJson
+        })
+    }else{
+        setTemplateData(templateRes.templateJson || {
+            folderName:"Root",
+            items:[]
+
+        })
     }
-}
+    toast.success("Templatr loaded successfully")
+
+    } catch (error) {
+        console.error("Error loading playground",error)
+        setError("Failed to load playground data")
+        toast.error("failed to load playground data")
+    } finally{
+        setIsLoading(false)
+    }
+},[id])
 
 const saveTemplateData = async (data:TemplateFolder)=>{
     try {
