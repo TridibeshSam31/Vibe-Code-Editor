@@ -2,7 +2,8 @@ import { readTemplateStructureFromJson,saveTemplateStructureToJson } from "@/mod
 import { db } from "@/lib/db";
 import { templatePaths } from "@/lib/template";
 import path from 'path'
-import fs from 'fs'
+import fs from "fs/promises"
+
 import { NextRequest } from "next/server";
 
 function validateJsonStructure(data:unknown):boolean {
@@ -49,7 +50,8 @@ export async function GET(request:NextRequest,{params}:{params:Promise<{id:strin
       if (!validateJsonStructure(result.items)) {
         return Response.json({error:"Invalid JSON structure"},{status:500})
       }
-      await fs.unlink(outputFile)
+      await fs.unlink(outputFile)//on importing fs only that will ask for callback so import  fs from "fs/promises" Now fs.unlink() is async and returns a promise No callback needed. TypeScript will stop complaining.
+
       return Response.json({success:true,templateJson:result},{status:200})
     } catch (error) {
         

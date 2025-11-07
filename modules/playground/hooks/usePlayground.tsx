@@ -2,7 +2,7 @@ import {useState,useEffect,useCallback} from "react"
 
 
 import type { TemplateFolder } from "../lib/path-to-json"
-import { getPlaygroundById } from "../actions"
+import { getPlaygroundById, SaveUpdatedCode } from "../actions"
 import { toast } from "sonner"
 
 interface PlaygroundData {
@@ -77,16 +77,23 @@ const loadPlayground = useCallback(async ()=>{
     }
 },[id])
 
-const saveTemplateData = async (data:TemplateFolder)=>{
+const saveTemplateData = useCallback(async(data:TemplateFolder)=>{
     try {
-        await fetch(`/api/playground/${id}/template`,{
-            method:"POST",
-            body:JSON.stringify(data)
-        });
+        await SaveUpdatedCode(id,data)
+        setTemplateData(data)
+        toast.success("changes saved successfully")
     } catch (error) {
-        setError("Failed to save template");
+        console.error("Error Sving Template data :",error)
+        toast.error("Failed to save changes")
+        throw error 
     }
-}
+
+},[id])
+
+useEffect(()=>{
+    loadPlayground()
+},[loadPlayground])
+
 
 return {
     playgroundData,
@@ -96,4 +103,5 @@ return {
     loadPlayground,
     saveTemplateData
 }
+
 }
