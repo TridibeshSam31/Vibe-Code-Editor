@@ -54,6 +54,7 @@ export async function GET(request:NextRequest,{params}:{params:Promise<{id:strin
 
       return Response.json({success:true,templateJson:result},{status:200})
     } catch (error) {
-        
+        console.error('Server Error',error)
+        return Response.json({success:false},{status:404})
     }
 }
