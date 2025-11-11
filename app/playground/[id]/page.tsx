@@ -1,4 +1,11 @@
 "use client"
+//this whole page is for the display feature of the playground that what a user will see on the playground / template that he choose 
+//like on the rightmost corner of the page we will see options of save file , save all etc a ai button that will help in ncode suggestion
+// a navbar that will display current files like app.jsx etc 
+//using monaco editor we will display the starter code of the following templates
+//we will integrate webcontainers here also so that will also be visible here
+//webcontainers are only visible for the client side no server is required for that 
+
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -13,8 +20,10 @@ import { Bot, FileText, Save, Settings, X } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import PlaygroundEditor from '@/modules/playground/components/playground-editor';
+import { useWebContainer } from '@/modules/webcontainers/hooks/useWebContainer';
+import WebContainerPreview from '@/modules/webcontainers/components/webcontainer-preview';
 
 const MainPlaygroundPage = () => {
     const {id} = useParams<{id:string}>();
@@ -23,6 +32,10 @@ const MainPlaygroundPage = () => {
     const {playgroundData,isLoading,templateData,error,saveTemplateData} = usePlayground(id)
      
     const {activeFileId , closeAllFiles, openFile , openFiles , setTemplateData ,  setPlaygroundId , setActiveFileId,closeFile } = useFileExplorer()
+
+    const {serverUrl , isLoading:containerLoading , error:containerError , instance , writeFileSync} 
+     //@ts-ignore
+    = useWebContainer({templateData})
 
     useEffect(()=>{setPlaygroundId(id)},[id,setPlaygroundId])
 
@@ -185,6 +198,28 @@ const MainPlaygroundPage = () => {
                           
                           />
                         </ResizablePanel>
+                        {
+                          isPreviewVisible && (
+                            <>
+                            <ResizableHandle/>
+                            <ResizablePanel defaultSize={50} >
+                              <WebContainerPreview
+                              //@ts-ignore
+                               templateData={templateData}
+                               instance={instance}
+                               writeFileSync = {writeFileSync}
+                               isLoading={containerLoading}
+                               error={containerError}
+                               //@ts-ignore
+                               serverUrl={serverUrl}
+                               forceResetup={false}
+                              
+                              />
+
+                            </ResizablePanel>
+                            </>
+                          )
+                        }
                        </ResizablePanelGroup>
                       </div>
 
