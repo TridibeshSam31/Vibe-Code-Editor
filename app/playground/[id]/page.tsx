@@ -9,9 +9,12 @@ import { useParams } from 'next/navigation'
 import React, { useEffect }  from 'react'
 import { TemplateFile } from '@/modules/playground/lib/path-to-json';
 import { Button } from '@/components/ui/button';
-import { Bot, Save, Settings } from 'lucide-react';
+import { Bot, FileText, Save, Settings, X } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import PlaygroundEditor from '@/modules/playground/components/playground-editor';
 
 const MainPlaygroundPage = () => {
     const {id} = useParams<{id:string}>();
@@ -19,7 +22,7 @@ const MainPlaygroundPage = () => {
 
     const {playgroundData,isLoading,templateData,error,saveTemplateData} = usePlayground(id)
      
-    const {activeFileId , closeAllFiles, openFile , openFiles , setTemplateData ,  setPlaygroundId , setActiveFileId } = useFileExplorer()
+    const {activeFileId , closeAllFiles, openFile , openFiles , setTemplateData ,  setPlaygroundId , setActiveFileId,closeFile } = useFileExplorer()
 
     useEffect(()=>{setPlaygroundId(id)},[id,setPlaygroundId])
 
@@ -122,7 +125,84 @@ const MainPlaygroundPage = () => {
               </header>
               <div className='h-[calc(100vh-4rem)]'>
                 {
-                  openFiles.length > 0 ? ()
+                  openFiles.length > 0 ? (
+                   <div className='h-full flex flex-col'>
+                     <div className='border-b bg-muted/30'>
+                     <Tabs value={activeFileId||""} onValueChange={setActiveFileId}>
+                      <div className="flex items-center justify-between px-4 py-2">
+                      <TabsList className="h-8 bg-transparent p-0">
+                        {openFiles.map((file) => (
+                          <TabsTrigger
+                            key={file.id}
+                            value={file.id}
+                            className="relative h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm group"
+                          >
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-3 w-3" />
+                              <span>
+                                {file.filename}.{file.fileExtension}
+                              </span>
+                              {file.hasUnsavedChanges && (
+                                <span className="h-2 w-2 rounded-full bg-orange-500" />
+                              )}
+                              <span
+                                className="ml-2 h-4 w-4 hover:bg-destructive hover:text-destructive-foreground rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  closeFile(file.id);
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </span>
+                            </div>
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+
+                      {openFiles.length > 1 && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={closeAllFiles}
+                          className="h-6 px-2 text-xs"
+                        >
+                          Close All
+                        </Button>
+                      )}
+                    </div>
+                      
+                      </Tabs> 
+                    
+                     </div>
+                     <div className='flex-1'>
+                       <ResizablePanelGroup direction='horizontal' className='h-full'>
+                        <ResizablePanel defaultSize={isPreviewVisible ? 50 : 100}>
+                          <PlaygroundEditor 
+                          activeFile={activeFile}
+                          content={activeFile?.content || ""}
+                          onContentChange={()=>{}}
+                          
+                          
+                          />
+                        </ResizablePanel>
+                       </ResizablePanelGroup>
+                      </div>
+
+                   </div>
+                  ) : (
+                    <div className='flex flex-col h-full items-center justify-center text-muted-foreground gap-4'>
+                      <FileText className='h-16 w-16 text-gray-300'/>
+                      <div className='text-center'>
+                        <p className='text-lg font-medium'>No Files Open</p>
+                        <p className='text-sm text-gray-500'>
+                          Select a file from sidebar to start editing
+                        </p>
+
+                        
+                      </div>
+
+                    </div>
+                  )
                 }
 
               </div>

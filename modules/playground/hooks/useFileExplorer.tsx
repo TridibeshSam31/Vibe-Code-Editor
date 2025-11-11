@@ -92,7 +92,7 @@ export const useFileExplorer = create<FileExplorerState>((set,get)=>({
             editorContent:file.content || "" , 
         }))
 
-        closeFile:(fileId)=>{
+        closeFile:(fileId : any)=>{
             const {openFiles , activeFileId} = get()
             const newFiles = openFiles.filter((f) => f.id !== fileId )
 
