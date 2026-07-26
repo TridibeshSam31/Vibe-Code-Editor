@@ -138,12 +138,31 @@ Visit `http://localhost:3000` in your browser.
 * `Ctrl + Space` or `Double Enter`: Trigger AI suggestions
 * `Tab`: Accept AI suggestion
 * `/`: Open Command Palette (if implemented)
+  
 
 ---
 
-## 📄 License
+### AI Project Review
 
-This project is licensed under the [MIT License](LICENSE).
+Workbench will include a **Review this project** button that scans the current project files and gives a structured AI review.
+
+The review will check for:
+
+- bugs and broken logic
+- security issues
+- missing environment variables
+- bad or confusing folder structure
+- code quality improvements
+- deployment readiness checklist
+
+ ---
+
+## 📄 License
+Copyright © 2026 Tridibesh Samantroy.
+
+This project is owned by Tridibesh Samantroy. All rights reserved unless explicit permission is provided by the owner.
+
+See [LICENSE](./LICENSE) for details.
 
 ---
 
